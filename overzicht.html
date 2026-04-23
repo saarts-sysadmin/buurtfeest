@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overzicht Aanmeldingen BBQ 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f2f2f0;color:#1a1a18;padding:1.5rem 1rem;-webkit-text-size-adjust:100%}
+.wrap{max-width:900px;margin:0 auto;padding-bottom:3rem}
+h1{font-size:20px;font-weight:600;margin-bottom:.25rem}
+.sub{font-size:14px;color:#666;margin-bottom:1.5rem}
+.topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.btn{padding:10px 16px;font-size:14px;font-weight:600;font-family:inherit;border-radius:8px;cursor:pointer;border:none;-webkit-appearance:none;}
+.btn-primary{background:#1a1a18;color:#fff;}
+.btn-secondary{background:#fff;color:#1a1a18;border:1px solid #ccc;}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.25rem}
+.stat{background:#fff;border-radius:10px;padding:1rem;border:1px solid #e0e0de;text-align:center}
+.stat-num{font-size:26px;font-weight:700;color:#1a1a18}
+.stat-lbl{font-size:11px;color:#888;margin-top:2px}
+.stat-sub{font-size:12px;color:#555;margin-top:4px}
+.card{background:#fff;border-radius:12px;border:1px solid #e0e0de;overflow:hidden;margin-bottom:1rem}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8f8f6;padding:10px 12px;text-align:left;font-weight:600;font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #e0e0de;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid #f0f0ee;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
+.badge-ok{background:#eafbe7;color:#2d6e22}
+.badge-warn{background:#fff8e1;color:#7a5c00}
+.detail{font-size:12px;color:#666;white-space:pre-line;line-height:1.5}
+.empty{text-align:center;padding:3rem;color:#888;font-size:14px}
+.loading{text-align:center;padding:3rem;color:#888;font-size:14px}
+.msg-err{background:#fdecea;border:1px solid #c0392b;color:#922b21;border-radius:8px;padding:1rem;margin-bottom:1rem;font-size:14px;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Overzicht aanmeldingen BBQ 2026</h1>
+  <p class="sub">Alle aanmeldingen via het buurtformulier.</p>
+
+  <div class="msg-err" id="msg-err"></div>
+
+  <div class="topbar">
+    <button class="btn btn-primary" id="btn-refresh" type="button">Vernieuwen</button>
+    <button class="btn btn-secondary" id="btn-excel" type="button" disabled>Download als Excel (.csv)</button>
+    <span id="last-updated" style="font-size:12px;color:#888;margin-left:auto"></span>
+  </div>
+
+  <div class="stats" id="stats" style="display:none">
+    <div class="stat"><div class="stat-num" id="s-gezinnen">0</div><div class="stat-lbl">Gezinnen</div></div>
+    <div class="stat"><div class="stat-num" id="s-adults">0</div><div class="stat-lbl">Volwassenen</div></div>
+    <div class="stat"><div class="stat-num" id="s-teens">0</div><div class="stat-lbl">12-17 jaar</div></div>
+    <div class="stat"><div class="stat-num" id="s-kids">0</div><div class="stat-lbl">t/m 12 jaar</div></div>
+    <div class="stat"><div class="stat-num" id="s-totaal">€ 0</div><div class="stat-lbl">Totaal verwacht</div><div class="stat-sub" id="s-betaald"></div></div>
+    <div class="stat"><div class="stat-num" id="s-allergie">0</div><div class="stat-lbl">Met allergie</div></div>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <div class="loading" id="loading">Aanmeldingen ophalen...</div>
+      <table id="tbl" style="display:none">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Datum</th>
+            <th>Gezin</th>
+            <th>Adres</th>
+            <th>E-mail</th>
+            <th>Vw</th>
+            <th>12-17</th>
+            <th>t/m12</th>
+            <th>Totaal</th>
+            <th>Allergie</th>
+            <th>Deelname</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+      <div class="empty" id="empty" style="display:none">Nog geen aanmeldingen ontvangen.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+var BIN_ID='69ea065836566621a8e2f551';
+var BIN_KEY='$2a$10$YZk9AQAvvge1okoVtzg9veYTNKOA4oJFJt/V7m4Fdj9cUYmKHZjti';
+var allData=[];
+
+function fmtDate(iso){
+  if(!iso) return '-';
+  var d=new Date(iso);
+  return d.toLocaleDateString('nl-NL',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+}
+
+function loadData(){
+  document.getElementById('loading').style.display='block';
+  document.getElementById('tbl').style.display='none';
+  document.getElementById('empty').style.display='none';
+  document.getElementById('msg-err').style.display='none';
+  document.getElementById('btn-refresh').disabled=true;
+  document.getElementById('btn-refresh').textContent='Laden...';
+
+  fetch('https://api.jsonbin.io/v3/b/'+BIN_ID+'/latest',{
+    headers:{'X-Master-Key':BIN_KEY}
+  })
+  .then(function(r){
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  })
+  .then(function(data){
+    allData=Array.isArray(data.record)?data.record:[];
+    renderTable(allData);
+    renderStats(allData);
+    document.getElementById('last-updated').textContent='Bijgewerkt: '+fmtDate(new Date().toISOString());
+    document.getElementById('btn-excel').disabled=allData.length===0;
+  })
+  .catch(function(e){
+    var err=document.getElementById('msg-err');
+    err.textContent='Kon aanmeldingen niet ophalen: '+e.message;
+    err.style.display='block';
+    document.getElementById('loading').style.display='none';
+  })
+  .finally(function(){
+    document.getElementById('btn-refresh').disabled=false;
+    document.getElementById('btn-refresh').textContent='Vernieuwen';
+  });
+}
+
+function renderTable(data){
+  document.getElementById('loading').style.display='none';
+  if(data.length===0){
+    document.getElementById('empty').style.display='block';
+    document.getElementById('tbl').style.display='none';
+    return;
+  }
+  document.getElementById('tbl').style.display='table';
+  document.getElementById('empty').style.display='none';
+  var tbody=document.getElementById('tbl-body');
+  tbody.innerHTML='';
+  for(var i=0;i<data.length;i++){
+    var r=data[i];
+    var tr=document.createElement('tr');
+    var allergie=r.allergie&&r.allergie!=='Geen';
+    tr.innerHTML='<td>'+(i+1)+'</td>'
+      +'<td style="white-space:nowrap">'+fmtDate(r.timestamp)+'</td>'
+      +'<td><strong>'+esc(r.naam||'-')+'</strong></td>'
+      +'<td>'+esc(r.adres||'-')+'</td>'
+      +'<td><a href="mailto:'+esc(r.email||'')+'" style="color:#1a1a18">'+esc(r.email||'-')+'</a></td>'
+      +'<td style="text-align:center">'+(r.volwassenen||0)+'</td>'
+      +'<td style="text-align:center">'+(r.tieners||0)+'</td>'
+      +'<td style="text-align:center">'+(r.kinderen||0)+'</td>'
+      +'<td style="white-space:nowrap"><strong>'+esc(r.totaal||'-')+'</strong></td>'
+      +'<td>'+(allergie?'<span class="badge badge-warn">Ja</span>':'<span class="badge badge-ok">Nee</span>')+'</td>'
+      +'<td><div class="detail">'+esc(r.deelname||'-')+'</div></td>';
+    tbody.appendChild(tr);
+  }
+}
+
+function renderStats(data){
+  var stats=document.getElementById('stats');
+  if(data.length===0){stats.style.display='none';return;}
+  stats.style.display='grid';
+  var adults=0,teens=0,kids=0,totaal=0,allergie=0;
+  for(var i=0;i<data.length;i++){
+    var r=data[i];
+    adults+=parseInt(r.volwassenen)||0;
+    teens+=parseInt(r.tieners)||0;
+    kids+=parseInt(r.kinderen)||0;
+    if(r.allergie&&r.allergie!=='Geen') allergie++;
+    // Parse totaal uit string zoals "€ 30,-" of "€ 7,50"
+    var t=(r.totaal||'').replace(/[^\d,\.]/g,'').replace(',','.') ;
+    totaal+=parseFloat(t)||0;
+  }
+  document.getElementById('s-gezinnen').textContent=data.length;
+  document.getElementById('s-adults').textContent=adults;
+  document.getElementById('s-teens').textContent=teens;
+  document.getElementById('s-kids').textContent=kids;
+  document.getElementById('s-totaal').textContent='\u20ac '+totaal.toFixed(2).replace('.',',');
+  document.getElementById('s-allergie').textContent=allergie;
+}
+
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function downloadCSV(){
+  if(allData.length===0) return;
+  var cols=['Datum','Achternaam','Adres','E-mail','Volwassenen','12-17 jr','t/m 12 jr','Deelname','Kosten','Totaal','Allergie'];
+  var rows=[cols];
+  for(var i=0;i<allData.length;i++){
+    var r=allData[i];
+    rows.push([
+      fmtDate(r.timestamp),
+      r.naam||'',r.adres||'',r.email||'',
+      r.volwassenen||0,r.tieners||0,r.kinderen||0,
+      (r.deelname||'').replace(/\n/g,' | '),
+      (r.kosten||'').replace(/\n/g,' | '),
+      r.totaal||'',
+      r.allergie||'Geen'
+    ]);
+  }
+  var csv=rows.map(function(row){
+    return row.map(function(cell){
+      var s=String(cell).replace(/"/g,'""');
+      return '"'+s+'"';
+    }).join(';');
+  }).join('\n');
+  var bom='\uFEFF';
+  var blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download='aanmeldingen_bbq_2026.csv';
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+document.getElementById('btn-refresh').addEventListener('click',loadData);
+document.getElementById('btn-refresh').addEventListener('touchend',function(e){e.preventDefault();loadData();});
+document.getElementById('btn-excel').addEventListener('click',downloadCSV);
+document.getElementById('btn-excel').addEventListener('touchend',function(e){e.preventDefault();downloadCSV();});
+
+loadData();
+</script>
+</body>
+</html>

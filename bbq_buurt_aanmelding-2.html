@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aanmelding Buurt BBQ 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f2f2f0;color:#1a1a18;padding:1.5rem 1rem;-webkit-text-size-adjust:100%}
+.wrap{max-width:600px;margin:0 auto;padding-bottom:3rem}
+h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
+.sub{font-size:14px;color:#666;margin-bottom:1.5rem}
+.card{background:#fff;border-radius:12px;padding:1.25rem;margin-bottom:1rem;border:1px solid #e0e0de}
+.card-title{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem}
+.field{margin-bottom:.9rem}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:13px;color:#555;margin-bottom:5px;font-weight:500}
+.field input,.field select,.field textarea{display:block;width:100%;font-size:16px;padding:11px 12px;border:1px solid #ccc;border-radius:8px;background:#fff;color:#1a1a18;-webkit-appearance:none;appearance:none;font-family:inherit;}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px;}
+.field textarea{min-height:80px;resize:vertical;line-height:1.5}
+.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid #1a1a18;outline-offset:-1px;border-color:transparent}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.person-block{background:#f8f8f6;border-radius:8px;padding:12px;margin-bottom:8px;border:1px solid #e8e8e6}
+.person-block:last-child{margin-bottom:0}
+.person-name{font-size:13px;font-weight:600;color:#333;margin-bottom:8px}
+.person-block .field{margin-bottom:0}
+.cost-inner{background:#f8f8f6;border-radius:8px;padding:1rem;border:1px solid #e8e8e6}
+.cost-rows{font-size:13px;color:#555;line-height:2;margin-bottom:.75rem;min-height:1.5rem}
+.cost-divider{border:none;border-top:1px solid #e0e0de;margin:.75rem 0}
+.cost-label{font-size:12px;color:#888;margin-bottom:2px}
+.cost-amount{font-size:24px;font-weight:600;color:#1a1a18}
+.cost-note{font-size:12px;color:#888;margin-top:.6rem;line-height:1.5}
+.btn-submit{display:block;width:100%;padding:15px;font-size:16px;font-weight:600;font-family:inherit;background:#1a1a18;color:#fff;border:none;border-radius:10px;cursor:pointer;margin-top:1rem;-webkit-appearance:none;user-select:none;-webkit-user-select:none;}
+.btn-submit:disabled{opacity:.45}
+.msg{border-radius:10px;padding:1.1rem;margin-top:1rem;font-size:14px;line-height:1.7;display:none}
+.msg-ok{background:#eafbe7;border:1px solid #5a9e4a;color:#2d6e22}
+.msg-err{background:#fdecea;border:1px solid #c0392b;color:#922b21}
+.hidden{display:none}
+@media(max-width:420px){.row3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Aanmelding Buurt BBQ 2026</h1>
+  <p class="sub">Meld uw gezin aan. Na aanmelding ontvangt u betaalinstructies.</p>
+
+  <div class="card">
+    <div class="card-title">Gezinsgegevens</div>
+    <div class="field"><label>Achternaam</label><input type="text" id="naam" placeholder="Jansen" autocomplete="family-name"></div>
+    <div class="field"><label>Adres</label><input type="text" id="adres" placeholder="Kerkstraat 12" autocomplete="street-address"></div>
+    <div class="field"><label>E-mailadres</label><input type="email" id="email" placeholder="naam@email.nl" autocomplete="email" inputmode="email"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Aantal deelnemers</div>
+    <div class="row3">
+      <div class="field">
+        <label>Volwassenen</label>
+        <select id="n-adults">
+          <option value="0">0</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Kinderen (12-17 jr)</label>
+        <select id="n-teens">
+          <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Kinderen (t/m 12 jr)</label>
+        <select id="n-kids">
+          <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Deelname per persoon</div>
+    <div id="persons-list"><p style="font-size:13px;color:#888">Selecteer hierboven het aantal deelnemers.</p></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Allergieën</div>
+    <div class="field">
+      <label>Heeft iemand in uw gezin allergieën?</label>
+      <select id="allergy-yn"><option value="no">Nee</option><option value="yes">Ja</option></select>
+    </div>
+    <div id="allergy-details" class="hidden">
+      <div class="field" style="margin-top:.75rem">
+        <label>Voor hoeveel personen?</label>
+        <select id="allergy-count">
+          <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Omschrijving van de allergie(ën)</label>
+        <textarea id="allergy-desc" placeholder="Bijv. 2 personen lactose-intolerant, 1 persoon glutenallergie..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Kostenoverzicht</div>
+    <div class="cost-inner">
+      <div class="cost-rows" id="cost-lines">Selecteer deelname per persoon.</div>
+      <hr class="cost-divider">
+      <div class="cost-label">Totaal te betalen</div>
+      <div class="cost-amount" id="cost-total">&euro; 0,-</div>
+      <p class="cost-note">Betaling vooraf via <strong>NL47 ASNB 8830 3748 49</strong>, o.v.v. Buurtbbq 2026 + uw achternaam.</p>
+    </div>
+  </div>
+
+  <button class="btn-submit" id="submit-btn" type="button">Aanmelden en bedrag bevestigen</button>
+  <div class="msg msg-ok" id="msg-ok"></div>
+  <div class="msg msg-err" id="msg-err"></div>
+</div>
+
+<script>
+(function(){
+var PRICES={adult:{both:30,bbq:20,drinks:15},teen:{both:10,bbq:5,drinks:5},kid:{both:7.5,bbq:2.5,drinks:5}};
+var LABELS={both:'BBQ + dranken',bbq:'Alleen BBQ',drinks:'Alleen dranken',none:'Neemt niet deel'};
+var BIN_ID='69ea065836566621a8e2f551';
+var BIN_KEY='$2a$10$YZk9AQAvvge1okoVtzg9veYTNKOA4oJFJt/V7m4Fdj9cUYmKHZjti';
+
+function fmt(n){
+  if(n===Math.floor(n)) return '\u20ac '+n+',-';
+  return '\u20ac '+n.toFixed(2).replace('.',',');
+}
+
+function buildPersons(){
+  var na=parseInt(document.getElementById('n-adults').value)||0;
+  var nt=parseInt(document.getElementById('n-teens').value)||0;
+  var nk=parseInt(document.getElementById('n-kids').value)||0;
+  var list=document.getElementById('persons-list');
+  list.innerHTML='';
+  if(na+nt+nk===0){list.innerHTML='<p style="font-size:13px;color:#888">Selecteer hierboven het aantal deelnemers.</p>';calcCost();return;}
+  for(var i=0;i<na;i++) list.appendChild(makeRow('Volwassene '+(i+1),'adult',i));
+  for(var j=0;j<nt;j++) list.appendChild(makeRow('Kind 12-17 jr '+(j+1),'teen',j));
+  for(var k=0;k<nk;k++) list.appendChild(makeRow('Kind t/m 12 jr '+(k+1),'kid',k));
+  calcCost();
+}
+
+function makeRow(label,type,idx){
+  var block=document.createElement('div');block.className='person-block';
+  var name=document.createElement('div');name.className='person-name';name.textContent=label;block.appendChild(name);
+  var field=document.createElement('div');field.className='field';
+  var lbl=document.createElement('label');lbl.textContent='Keuze';
+  var sel=document.createElement('select');sel.id='p-'+type+'-'+idx;
+  var opts=[['both','BBQ + dranken'],['bbq','Alleen BBQ'],['drinks','Alleen dranken'],['none','Neemt niet deel']];
+  for(var k=0;k<opts.length;k++){var opt=document.createElement('option');opt.value=opts[k][0];opt.textContent=opts[k][1];sel.appendChild(opt);}
+  sel.addEventListener('change',calcCost);
+  field.appendChild(lbl);field.appendChild(sel);block.appendChild(field);
+  return block;
+}
+
+function calcCost(){
+  var na=parseInt(document.getElementById('n-adults').value)||0;
+  var nt=parseInt(document.getElementById('n-teens').value)||0;
+  var nk=parseInt(document.getElementById('n-kids').value)||0;
+  var lines=[];var total=0;
+  for(var i=0;i<na;i++){var sel=document.getElementById('p-adult-'+i);if(!sel)continue;var v=sel.value;if(v==='none')continue;var p=PRICES.adult[v];lines.push('Volwassene '+(i+1)+' \u2013 '+LABELS[v]+': '+fmt(p));total+=p;}
+  for(var j=0;j<nt;j++){var selt=document.getElementById('p-teen-'+j);if(!selt)continue;var vt=selt.value;if(vt==='none')continue;var pt=PRICES.teen[vt];lines.push('Kind 12-17 jr '+(j+1)+' \u2013 '+LABELS[vt]+': '+fmt(pt));total+=pt;}
+  for(var k=0;k<nk;k++){var selk=document.getElementById('p-kid-'+k);if(!selk)continue;var vk=selk.value;if(vk==='none')continue;var pk=PRICES.kid[vk];lines.push('Kind t/m 12 jr '+(k+1)+' \u2013 '+LABELS[vk]+': '+fmt(pk));total+=pk;}
+  document.getElementById('cost-lines').innerHTML=lines.length?lines.join('<br>'):'Selecteer deelname per persoon.';
+  document.getElementById('cost-total').innerHTML=fmt(total);
+}
+
+document.getElementById('n-adults').addEventListener('change',buildPersons);
+document.getElementById('n-teens').addEventListener('change',buildPersons);
+document.getElementById('n-kids').addEventListener('change',buildPersons);
+document.getElementById('allergy-yn').addEventListener('change',function(){
+  var det=document.getElementById('allergy-details');
+  if(this.value==='yes'){det.classList.remove('hidden');}else{det.classList.add('hidden');}
+});
+
+function saveToJsonBin(record){
+  return fetch('https://api.jsonbin.io/v3/b/'+BIN_ID,{method:'GET',headers:{'X-Master-Key':BIN_KEY}})
+    .then(function(r){return r.json();})
+    .then(function(data){
+      var arr=Array.isArray(data.record)?data.record:[];
+      arr.push(record);
+      return fetch('https://api.jsonbin.io/v3/b/'+BIN_ID,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY},
+        body:JSON.stringify(arr)
+      });
+    });
+}
+
+function doSubmit(){
+  var btn=document.getElementById('submit-btn');
+  if(btn.disabled) return;
+  var naam=document.getElementById('naam').value.trim();
+  var adres=document.getElementById('adres').value.trim();
+  var email=document.getElementById('email').value.trim();
+  if(!naam){alert('Vul uw achternaam in.');return;}
+  if(!email){alert('Vul uw e-mailadres in.');return;}
+
+  var na=parseInt(document.getElementById('n-adults').value)||0;
+  var nt=parseInt(document.getElementById('n-teens').value)||0;
+  var nk=parseInt(document.getElementById('n-kids').value)||0;
+  var allergyYn=document.getElementById('allergy-yn').value;
+  var allergyCount=allergyYn==='yes'?document.getElementById('allergy-count').value:'0';
+  var allergyDesc=allergyYn==='yes'?(document.getElementById('allergy-desc').value.trim()||'Niet omschreven'):'Geen';
+  var totalEl=document.getElementById('cost-total');
+  var total=totalEl.textContent||totalEl.innerText;
+  var costEl=document.getElementById('cost-lines');
+  var costLines=costEl.textContent||costEl.innerText;
+
+  var deelname='';
+  for(var i=0;i<na;i++){var s=document.getElementById('p-adult-'+i);if(s)deelname+='Volwassene '+(i+1)+': '+(LABELS[s.value]||'Neemt niet deel')+'\n';}
+  for(var j=0;j<nt;j++){var st=document.getElementById('p-teen-'+j);if(st)deelname+='Kind 12-17 jr '+(j+1)+': '+(LABELS[st.value]||'Neemt niet deel')+'\n';}
+  for(var k=0;k<nk;k++){var sk=document.getElementById('p-kid-'+k);if(sk)deelname+='Kind t/m 12 jr '+(k+1)+': '+(LABELS[sk.value]||'Neemt niet deel')+'\n';}
+
+  var allergieTekst=allergyYn==='yes'?('Ja - '+allergyCount+' persoon/personen\n'+allergyDesc):'Geen';
+
+  var record={
+    timestamp:new Date().toISOString(),
+    naam:naam,adres:adres||'Niet ingevuld',email:email,
+    volwassenen:na,tieners:nt,kinderen:nk,
+    deelname:deelname.trim()||'Geen deelname geselecteerd',
+    kosten:costLines,totaal:total,allergie:allergieTekst
+  };
+
+  var params={
+    naam:naam,adres:adres||'Niet ingevuld',email:email,
+    volwassenen:String(na),tieners:String(nt),kinderen:String(nk),
+    deelname:deelname.trim()||'Geen deelname geselecteerd',
+    kosten:costLines,totaal:total,allergie:allergieTekst,
+    iban:'NL47 ASNB 8830 3748 49',omschrijving:'Buurtbbq 2026 '+naam
+  };
+
+  btn.disabled=true;btn.textContent='Versturen...';hideMessages();
+
+  var emailDone=false;var binDone=false;var emailErr=null;var binErr=null;
+
+  function checkDone(){
+    if(!emailDone||!binDone) return;
+    if(emailErr&&binErr){
+      btn.disabled=false;btn.textContent='Aanmelden en bedrag bevestigen';
+      showErr('Verzenden mislukt. Controleer uw internetverbinding en probeer opnieuw.');
+    } else {
+      btn.textContent='Verstuurd!';
+      showOk('<strong>Bedankt, familie '+naam+'!</strong><br><br>'
+        +'Uw aanmelding is verstuurd naar buurtfeestlaarveld@gmail.com.<br><br>'
+        +'Totaalbedrag: <strong>'+total+'</strong><br><br>'
+        +'Maak over naar <strong>NL47 ASNB 8830 3748 49</strong><br>'
+        +'o.v.v. <strong>Buurtbbq 2026 '+naam+'</strong><br><br>'
+        +'Tot op het feest!');
+    }
+  }
+
+  emailjs.send('service_hm0wa9q','template_szxr9za',params)
+    .then(function(){emailDone=true;checkDone();})
+    .catch(function(e){emailDone=true;emailErr=e;checkDone();});
+
+  saveToJsonBin(record)
+    .then(function(){binDone=true;checkDone();})
+    .catch(function(e){binDone=true;binErr=e;checkDone();});
+}
+
+function showOk(html){var el=document.getElementById('msg-ok');el.innerHTML=html;el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showErr(html){var el=document.getElementById('msg-err');el.innerHTML=html;el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function hideMessages(){document.getElementById('msg-ok').style.display='none';document.getElementById('msg-err').style.display='none';}
+
+var submitBtn=document.getElementById('submit-btn');
+submitBtn.addEventListener('click',function(e){e.preventDefault();doSubmit();});
+submitBtn.addEventListener('touchend',function(e){e.preventDefault();doSubmit();});
+
+emailjs.init('MK6n50RdSv-hLvq45');
+buildPersons();
+})();
+</script>
+</body>
+</html>
