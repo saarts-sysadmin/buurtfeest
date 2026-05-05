@@ -37,13 +37,20 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
 .msg-ok{background:#eafbe7;border:1px solid #5a9e4a;color:#2d6e22}
 .msg-err{background:#fdecea;border:1px solid #c0392b;color:#922b21}
 .hidden{display:none}
+.check-list{display:flex;flex-direction:column;gap:10px;margin-top:.5rem}
+.check-item{display:flex;align-items:flex-start;gap:12px;background:#f8f8f6;border:1px solid #e8e8e6;border-radius:8px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.check-item input[type=checkbox]{width:20px;height:20px;min-width:20px;margin:0;cursor:pointer;accent-color:#1a1a18;margin-top:1px}
+.check-item-text{font-size:14px;color:#1a1a18;line-height:1.4}
+.check-item-text strong{display:block;font-weight:600;margin-bottom:2px}
+.check-item-text span{font-size:12px;color:#888}
+.check-item.selected{background:#f0f7ee;border-color:#5a9e4a}
 @media(max-width:420px){.row3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Aanmelding Buurt BBQ Laarveld - Editie 2026</h1>
-  <p class="sub">Leuk dat je erbij wilt zijn! Vul onderstaande formulier volledig in en druk op verzenden. Na aanmelding ontvang je de betaalinstructies.</p>
+  <h1>Aanmelding Buurt BBQ 2026</h1>
+  <p class="sub">Meld uw gezin aan. Na aanmelding ontvangt u betaalinstructies.</p>
 
   <div class="card">
     <div class="card-title">Gezinsgegevens</div>
@@ -97,6 +104,47 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
       <div class="field">
         <label>Omschrijving van de allergie(ën)</label>
         <textarea id="allergy-desc" placeholder="Bijv. 2 personen lactose-intolerant, 1 persoon glutenallergie..."></textarea>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-title">Beschikbare spullen</div>
+    <p style="font-size:14px;color:#444;line-height:1.6;margin-bottom:1rem">Heeft u onderstaande spullen beschikbaar en mag de organisatie hier gebruik van maken? Selecteer wat van toepassing is &mdash; u bent nergens toe verplicht, maar uw hulp wordt zeer op prijs gesteld!</p>
+    <div class="check-list">
+      <label class="check-item" id="lbl-tent">
+        <input type="checkbox" id="chk-tent">
+        <div class="check-item-text">
+          <strong>Partytent</strong>
+          <span>Handig bij slecht weer om gasten droog te houden</span>
+        </div>
+      </label>
+      <label class="check-item" id="lbl-geluid">
+        <input type="checkbox" id="chk-geluid">
+        <div class="check-item-text">
+          <strong>Geluidsbox / speaker</strong>
+          <span>Voor muziek tijdens het feest</span>
+        </div>
+      </label>
+      <label class="check-item" id="lbl-statafel">
+        <input type="checkbox" id="chk-statafel">
+        <div class="check-item-text">
+          <strong>Statafel(s)</strong>
+          <span>Geef aan hoeveel statafels u beschikbaar heeft</span>
+        </div>
+      </label>
+    </div>
+    <div id="statafel-aantal" class="hidden" style="margin-top:.75rem">
+      <div class="field">
+        <label>Aantal statafels</label>
+        <select id="statafel-n">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5 of meer</option>
+        </select>
       </div>
     </div>
   </div>
@@ -216,19 +264,28 @@ function doSubmit(){
 
   var allergieTekst=allergyYn==='yes'?('Ja - '+allergyCount+' persoon/personen\n'+allergyDesc):'Geen';
 
+  var spullenLijst=[];
+  if(document.getElementById('chk-tent').checked) spullenLijst.push('Partytent');
+  if(document.getElementById('chk-geluid').checked) spullenLijst.push('Geluidsbox');
+  if(document.getElementById('chk-statafel').checked){
+    var sn=document.getElementById('statafel-n').value;
+    spullenLijst.push('Statafel(s): '+sn);
+  }
+  var spullen=spullenLijst.length?spullenLijst.join(', '):'Niets beschikbaar gesteld';
+
   var record={
     timestamp:new Date().toISOString(),
     naam:naam,adres:adres||'Niet ingevuld',email:email,
     volwassenen:na,tieners:nt,kinderen:nk,
     deelname:deelname.trim()||'Geen deelname geselecteerd',
-    kosten:costLines,totaal:total,allergie:allergieTekst
+    kosten:costLines,totaal:total,allergie:allergieTekst,spullen:spullen
   };
 
   var params={
     naam:naam,adres:adres||'Niet ingevuld',email:email,
     volwassenen:String(na),tieners:String(nt),kinderen:String(nk),
     deelname:deelname.trim()||'Geen deelname geselecteerd',
-    kosten:costLines,totaal:total,allergie:allergieTekst,
+    kosten:costLines,totaal:total,allergie:allergieTekst,spullen:spullen,
     iban:'NL47 ASNB 8830 3748 49',omschrijving:'Buurtbbq 2026 '+naam
   };
 
@@ -270,6 +327,24 @@ submitBtn.addEventListener('click',function(e){e.preventDefault();doSubmit();});
 submitBtn.addEventListener('touchend',function(e){e.preventDefault();doSubmit();});
 
 emailjs.init('MK6n50RdSv-hLvq45');
+
+// Checkbox visual toggle
+['tent','geluid','statafel'].forEach(function(id){
+  var chk=document.getElementById('chk-'+id);
+  var lbl=document.getElementById('lbl-'+id);
+  chk.addEventListener('change',function(){
+    if(this.checked){lbl.classList.add('selected');}else{lbl.classList.remove('selected');}
+    if(id==='statafel'){
+      document.getElementById('statafel-aantal').classList.toggle('hidden',!this.checked);
+    }
+  });
+  lbl.addEventListener('touchend',function(e){
+    e.preventDefault();
+    chk.checked=!chk.checked;
+    chk.dispatchEvent(new Event('change'));
+  });
+});
+
 buildPersons();
 })();
 </script>
