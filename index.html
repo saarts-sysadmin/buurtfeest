@@ -50,6 +50,15 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
 .msg-ok{background:#eafbe7;border:1px solid #5a9e4a;color:#2d6e22}
 .msg-err{background:#fdecea;border:1px solid #c0392b;color:#922b21}
 .hidden{display:none}
+.qr-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:.75rem}
+.qr-col{border:0.5px solid #e0e0de;border-radius:8px;padding:.9rem;display:flex;flex-direction:column;align-items:center;gap:8px}
+.qr-col-label{font-size:12px;font-weight:600;color:#555;text-align:center}
+.qr-col-banks{font-size:11px;color:#888;text-align:center;margin-bottom:2px}
+.qr-col img{width:130px;height:130px;border-radius:6px;border:0.5px solid #e8e8e6}
+.qr-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
+.qr-badge-epc{background:#eafbe7;color:#2d6e22}
+.qr-badge-tikkie{background:#e6f1fb;color:#185fa5}
+@media(max-width:420px){.qr-grid{grid-template-columns:1fr}.row3{grid-template-columns:1fr}}
 @media(max-width:420px){.row3{grid-template-columns:1fr}}
 </style>
 </head>
@@ -82,19 +91,43 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
       <div class="field">
         <label>Volwassenen</label>
         <select id="n-adults">
-          <option value="0">0</option><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
         </select>
       </div>
       <div class="field">
         <label>Kinderen (12-17 jr)</label>
         <select id="n-teens">
-          <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
         </select>
       </div>
       <div class="field">
         <label>Kinderen (t/m 12 jr)</label>
         <select id="n-kids">
-          <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+          <option value="0" selected>0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
         </select>
       </div>
     </div>
@@ -120,7 +153,14 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
       <div class="field" style="margin-top:.75rem">
         <label>Voor hoeveel personen?</label>
         <select id="allergy-count">
-          <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
         </select>
       </div>
       <div class="field">
@@ -160,7 +200,11 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
       <div class="field">
         <label>Aantal statafels</label>
         <select id="statafel-n">
-          <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 of meer</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5 of meer</option>
         </select>
       </div>
     </div>
@@ -179,15 +223,26 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
 
   <div class="card" id="qr-card" style="display:none">
     <div class="card-title">Betaal via QR-code</div>
-    <p style="font-size:14px;color:#444;line-height:1.6;margin-bottom:1rem">Scan deze QR-code met je bank-app. Het IBAN, bedrag en omschrijving worden automatisch ingevuld.</p>
-    <div class="qr-box">
-      <img id="qr-img" src="" alt="QR-code" style="width:200px;height:200px;border-radius:8px;border:1px solid #e0e0de">
-      <div class="qr-info">
-        <strong style="color:#1a1a18">NL47 ASNB 8830 3748 49</strong><br>
-        Bedrag: <strong style="color:#1a1a18" id="qr-amount"></strong><br>
-        O.v.v.: <strong style="color:#1a1a18" id="qr-ref"></strong>
+    <p style="font-size:14px;color:var(--color-text-secondary,#555);line-height:1.6;margin-bottom:1rem">Scan de QR-code die bij jouw bank past. Het IBAN, bedrag en omschrijving worden automatisch ingevuld.</p>
+    <div class="qr-grid">
+      <div class="qr-col">
+        <div class="qr-col-label">Voor ING &nbsp;|&nbsp; ASN &nbsp;|&nbsp; Bunq &nbsp;|&nbsp; Knab</div>
+        <div class="qr-col-banks">SNS &nbsp;|&nbsp; RegioBank</div>
+        <img id="qr-epc-img" src="" alt="EPC QR-code">
+        <span class="qr-badge qr-badge-epc">Automatisch ingevuld</span>
+        <a id="qr-epc-link" href="#" target="_blank" style="font-size:12px;color:#1a1a18;text-decoration:underline;text-align:center">Grotere versie openen</a>
       </div>
-      <a id="qr-link" href="#" class="qr-link" target="_blank">Kan je de QR-code niet scannen? Klik hier voor een grotere versie</a>
+      <div class="qr-col">
+        <div class="qr-col-label">Voor ABN AMRO &nbsp;|&nbsp; Rabobank</div>
+        <div class="qr-col-banks">en alle andere banken</div>
+        <img id="qr-tikkie-img" src="" alt="Tikkie QR-code">
+        <span class="qr-badge qr-badge-tikkie">Werkt bij alle banken</span>
+        <a id="qr-tikkie-link" href="#" target="_blank" style="font-size:12px;color:#1a1a18;text-decoration:underline;text-align:center">Tikkie openen in browser</a>
+      </div>
+    </div>
+    <div style="font-size:13px;color:#888;text-align:center;line-height:1.8">
+      <strong style="color:#1a1a18">NL47 ASNB 8830 3748 49</strong><br>
+      Bedrag: <strong style="color:#1a1a18" id="qr-amount"></strong>&nbsp;&nbsp;O.v.v.: <strong style="color:#1a1a18" id="qr-ref"></strong>
     </div>
   </div>
 
@@ -232,6 +287,7 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
     return ref;
   }
 
+  /* ---- personen ---- */
   function buildPersons() {
     var na   = parseInt(document.getElementById('n-adults').value) || 0;
     var nt   = parseInt(document.getElementById('n-teens').value)  || 0;
@@ -252,21 +308,30 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
   function makeRow(label, type, idx) {
     var block = document.createElement('div');
     block.className = 'person-block';
+
     var nameDiv = document.createElement('div');
     nameDiv.className = 'person-name';
     nameDiv.textContent = label;
     block.appendChild(nameDiv);
+
     var field = document.createElement('div');
     field.className = 'field';
+
     var lbl = document.createElement('label');
     lbl.textContent = 'Keuze';
     field.appendChild(lbl);
+
     var sel = document.createElement('select');
     sel.id = 'p-' + type + '-' + idx;
-    var opties = [['both','BBQ + dranken'],['bbq','Alleen BBQ'],['drinks','Alleen dranken'],['none','Neemt niet deel']];
+    var opties = [
+      ['both',  'BBQ + dranken'],
+      ['bbq',   'Alleen BBQ'],
+      ['drinks','Alleen dranken'],
+      ['none',  'Neemt niet deel']
+    ];
     for (var o = 0; o < opties.length; o++) {
       var opt = document.createElement('option');
-      opt.value = opties[o][0];
+      opt.value       = opties[o][0];
       opt.textContent = opties[o][1];
       sel.appendChild(opt);
     }
@@ -276,59 +341,74 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
     return block;
   }
 
+  /* ---- kosten ---- */
   function calcCost() {
     var na = parseInt(document.getElementById('n-adults').value) || 0;
     var nt = parseInt(document.getElementById('n-teens').value)  || 0;
     var nk = parseInt(document.getElementById('n-kids').value)   || 0;
     var lines = [];
     var total = 0;
+
     for (var i = 0; i < na; i++) {
       var s = document.getElementById('p-adult-' + i);
       if (!s || s.value === 'none') continue;
       var p = PRICES.adult[s.value];
-      lines.push('Volwassene ' + (i+1) + ' \u2013 ' + LABELS[s.value] + ': ' + fmt(p));
+      lines.push('Volwassene ' + (i + 1) + ' \u2013 ' + LABELS[s.value] + ': ' + fmt(p));
       total += p;
     }
     for (var j = 0; j < nt; j++) {
       var st = document.getElementById('p-teen-' + j);
       if (!st || st.value === 'none') continue;
       var pt = PRICES.teen[st.value];
-      lines.push('Kind 12-17 jr ' + (j+1) + ' \u2013 ' + LABELS[st.value] + ': ' + fmt(pt));
+      lines.push('Kind 12-17 jr ' + (j + 1) + ' \u2013 ' + LABELS[st.value] + ': ' + fmt(pt));
       total += pt;
     }
     for (var k = 0; k < nk; k++) {
       var sk = document.getElementById('p-kid-' + k);
       if (!sk || sk.value === 'none') continue;
       var pk = PRICES.kid[sk.value];
-      lines.push('Kind t/m 12 jr ' + (k+1) + ' \u2013 ' + LABELS[sk.value] + ': ' + fmt(pk));
+      lines.push('Kind t/m 12 jr ' + (k + 1) + ' \u2013 ' + LABELS[sk.value] + ': ' + fmt(pk));
       total += pk;
     }
+
     document.getElementById('cost-lines').innerHTML = lines.length ? lines.join('<br>') : 'Selecteer deelname per persoon.';
     document.getElementById('cost-total').innerHTML = fmt(total);
     currentTotal = total;
     updateQR();
   }
 
+  /* ---- QR ---- */
+  var TIKKIE_URL = 'TIKKIE_PLACEHOLDER';
+
   function updateQR() {
     var card = document.getElementById('qr-card');
     if (currentTotal <= 0) { card.style.display = 'none'; return; }
+
     var ref    = buildRef();
     var refEpc = ref.substring(0, 35);
     var epc    = 'BCD\n002\n1\nSCT\nASNBNL21\nBuurtfeest Laarveld\nNL47ASNB8830374849\nEUR'
                + currentTotal.toFixed(2) + '\n\n\n' + refEpc;
-    var qrSrc   = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&ecc=M&data=' + encodeURIComponent(epc);
-    var qrLarge = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&ecc=M&data=' + encodeURIComponent(epc);
-    document.getElementById('qr-amount').textContent = fmt(currentTotal);
-    document.getElementById('qr-ref').textContent    = ref;
-    document.getElementById('qr-img').src            = qrSrc;
-    document.getElementById('qr-link').href          = qrLarge;
+
+    var qrBase  = 'https://api.qrserver.com/v1/create-qr-code/?ecc=M&data=';
+    var epcSrc  = qrBase + 'size=260x260&data=' + encodeURIComponent(epc);
+    var epcLarge = qrBase + 'size=500x500&data=' + encodeURIComponent(epc);
+    var tikkieSrc  = qrBase + 'size=260x260&data=' + encodeURIComponent(TIKKIE_URL);
+
+    document.getElementById('qr-amount').textContent      = fmt(currentTotal);
+    document.getElementById('qr-ref').textContent         = ref;
+    document.getElementById('qr-epc-img').src             = epcSrc;
+    document.getElementById('qr-epc-link').href           = epcLarge;
+    document.getElementById('qr-tikkie-img').src          = tikkieSrc;
+    document.getElementById('qr-tikkie-link').href        = TIKKIE_URL;
+
     card.style.display = 'block';
   }
 
+  /* ---- event listeners ---- */
   document.getElementById('n-adults').addEventListener('change', buildPersons);
   document.getElementById('n-teens').addEventListener('change',  buildPersons);
   document.getElementById('n-kids').addEventListener('change',   buildPersons);
-  document.getElementById('naam').addEventListener('input', updateQR);
+  document.getElementById('naam').addEventListener('input',  updateQR);
   document.getElementById('adres').addEventListener('input', function () {
     updateQR();
     if (valideerAdres(this.value.trim())) {
@@ -337,7 +417,8 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
     }
   });
   document.getElementById('adres').addEventListener('blur', function () {
-    if (this.value.trim() && !valideerAdres(this.value.trim())) {
+    var val = this.value.trim();
+    if (val && !valideerAdres(val)) {
       this.classList.add('invalid');
       document.getElementById('adres-err').style.display = 'block';
     }
@@ -370,6 +451,7 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
     }(chkIds[ci]));
   }
 
+  /* ---- JSONBin ---- */
   function saveToJsonBin(record) {
     return fetch('https://api.jsonbin.io/v3/b/' + BIN_ID, { method: 'GET', headers: { 'X-Master-Key': BIN_KEY } })
       .then(function (r) { return r.json(); })
@@ -384,6 +466,7 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
       });
   }
 
+  /* ---- verzenden ---- */
   function doSubmit() {
     var btn = document.getElementById('submit-btn');
     if (btn.disabled) return;
@@ -425,12 +508,13 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
     if (document.getElementById('chk-statafel').checked) spullenLijst.push('Statafel(s): ' + document.getElementById('statafel-n').value);
     var spullen = spullenLijst.length ? spullenLijst.join(', ') : 'Niets beschikbaar gesteld';
 
-    var ref     = buildRef();
-    var refEpc  = ref.substring(0, 35);
-    var epc     = 'BCD\n002\n1\nSCT\nASNBNL21\nBuurtfeest Laarveld\nNL47ASNB8830374849\nEUR'
-                + currentTotal.toFixed(2) + '\n\n\n' + refEpc;
-    var qrUrl   = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&ecc=M&data=' + encodeURIComponent(epc);
-    var qrLarge = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&ecc=M&data=' + encodeURIComponent(epc);
+    var ref    = buildRef();
+    var refEpc = ref.substring(0, 35);
+    var epc    = 'BCD\n002\n1\nSCT\nASNBNL21\nBuurtfeest Laarveld\nNL47ASNB8830374849\nEUR'
+               + currentTotal.toFixed(2) + '\n\n\n' + refEpc;
+    var qrUrl     = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&ecc=M&data=' + encodeURIComponent(epc);
+    var betaalLink = 'https://api.qrserver.com/v1/create-qr-code/?size=500x500&ecc=M&data=' + encodeURIComponent(epc);
+    var tikkieUrl = TIKKIE_URL;
 
     var record = {
       timestamp: new Date().toISOString(),
@@ -441,7 +525,7 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
       allergie: allergieTekst, spullen: spullen
     };
 
-    var baseParams = {
+    var params = {
       naam: naam, adres: adres, email: email,
       volwassenen: String(na), tieners: String(nt), kinderen: String(nk),
       deelname: deelname.trim() || 'Geen deelname geselecteerd',
@@ -450,7 +534,8 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
       iban: 'NL47 ASNB 8830 3748 49',
       omschrijving: ref,
       qr_url: qrUrl,
-      betaal_link: qrLarge
+      betaal_link: betaalLink,
+      tikkie_url: tikkieUrl
     };
 
     btn.disabled    = true;
@@ -458,12 +543,11 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
     document.getElementById('msg-ok').style.display  = 'none';
     document.getElementById('msg-err').style.display = 'none';
 
-    var orgDone = false, deelDone = false, binDone = false;
-    var orgErr  = null,  deelErr  = null,  binErr  = null;
+    var orgDone = false, deelDone = false, orgErr = null, deelErr = null, binDone = false, binErr = null;
 
     function checkDone() {
       if (!orgDone || !deelDone || !binDone) return;
-      if (orgErr && deelErr) {
+      if (orgErr && deelErr && binErr) {
         btn.disabled    = false;
         btn.textContent = 'Aanmelden en bedrag bevestigen';
         var el = document.getElementById('msg-err');
@@ -471,7 +555,7 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
         el.style.display = 'block';
         el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       } else {
-        btn.textContent = 'Verstuurd!';
+        btn.textContent  = 'Verstuurd!';
         var ok = document.getElementById('msg-ok');
         ok.innerHTML =
           '<strong>Bedankt, familie ' + naam + '!</strong><br><br>'
@@ -485,19 +569,19 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
       }
     }
 
-    // E-mail naar organisatie
+    // E-mail naar organisatie (to_email = organisatie)
     var paramsOrg = {};
-    for (var k1 in baseParams) paramsOrg[k1] = baseParams[k1];
+    for (var key in params) paramsOrg[key] = params[key];
     paramsOrg.to_email = 'buurtfeestlaarveld@gmail.com';
     emailjs.send('service_hm0wa9q', 'template_szxr9za', paramsOrg)
       .then(function () { orgDone = true; checkDone(); })
       .catch(function (e) { orgDone = true; orgErr = e; checkDone(); });
 
-    // E-mail naar deelnemer
-    var paramsDeel = {};
-    for (var k2 in baseParams) paramsDeel[k2] = baseParams[k2];
-    paramsDeel.to_email = email;
-    emailjs.send('service_hm0wa9q', 'template_szxr9za', paramsDeel)
+    // E-mail naar deelnemer (to_email = deelnemer)
+    var paramsDeelnemer = {};
+    for (var key in params) paramsDeelnemer[key] = params[key];
+    paramsDeelnemer.to_email = email;
+    emailjs.send('service_hm0wa9q', 'template_szxr9za', paramsDeelnemer)
       .then(function () { deelDone = true; checkDone(); })
       .catch(function (e) { deelDone = true; deelErr = e; checkDone(); });
 
