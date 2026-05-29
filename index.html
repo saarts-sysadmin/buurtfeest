@@ -64,8 +64,8 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
 </head>
 <body>
 <div class="wrap">
-  <h1>Aanmelding Buurt BBQ Laarveld - Editie 2026</h1>
-  <p class="sub">Leuk dat je erbij bent! Meld je voor 1 juli aan en zorg dat dan ook dat de betaling is voldaan. Betaalinstructies vind je onderaan het formulier!</p>
+  <h1>Buurt BBQ Laarveld &ndash; Editie 2026</h1>
+  <p class="sub">Leuk dat je erbij bent! Meld je voor 1 juli aan en zorg dat dan ook de betaling is voldaan. Betaalinstructies krijg je op het scherm nadat je op Aanmelden hebt geklikt.</p>
 
   <div class="card">
     <div class="card-title">Gezinsgegevens</div>
@@ -217,34 +217,36 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
       <hr class="cost-divider">
       <div class="cost-label">Totaal te betalen</div>
       <div class="cost-amount" id="cost-total">&euro; 0,-</div>
-      <p class="cost-note">Betaling vooraf via onderstaande QR-code die je met je telefoon kunt scannen.</p>
+      <p class="cost-note">Betaling vooraf via de QR-code of een bankoverschrijving vooraf. Betaalinstructies volgen.</p>
     </div>
   </div>
 
+  <button class="btn-submit" id="submit-btn" type="button">Aanmelden</button>
+
   <div class="card" id="qr-card" style="display:none">
-    <div class="card-title">Betaal via QR-code</div>
-    <p style="font-size:14px;color:var(--color-text-secondary,#555);line-height:1.6;margin-bottom:1rem">Scan de QR-code die bij jouw bank past. Het IBAN, bedrag en omschrijving worden automatisch ingevuld.</p>
+    <div class="card-title">Betaalinstructies</div>
+    <p style="font-size:14px;color:#555;line-height:1.6;margin-bottom:1rem">Scan de QR-code die bij jouw bank past.</p>
     <div class="qr-grid">
       <div class="qr-col">
-        <div class="qr-col-label">Voor ING | ASN | Bunq | Knab</div>
+        <div class="qr-col-label">Voor ING &nbsp;|&nbsp; ASN &nbsp;|&nbsp; Bunq &nbsp;|&nbsp; Knab</div>
+        <div class="qr-col-banks">SNS &nbsp;|&nbsp; RegioBank</div>
         <img id="qr-epc-img" src="" alt="EPC QR-code">
-        <span class="qr-badge qr-badge-epc">Open de bankapp en scan de code</span>
         <a id="qr-epc-link" href="#" target="_blank" style="font-size:12px;color:#1a1a18;text-decoration:underline;text-align:center">Grotere versie openen</a>
+        <div style="font-size:12px;color:#555;text-align:center;margin-top:4px">Open de bankapp en scan de code</div>
       </div>
       <div class="qr-col">
-        <div class="qr-col-label">Voor ABN AMRO | Rabobank</div>
+        <div class="qr-col-label">Voor ABN AMRO &nbsp;|&nbsp; Rabobank</div>
+        <div class="qr-col-banks">en alle andere banken</div>
         <img id="qr-tikkie-img" src="" alt="Tikkie QR-code">
-        <span class="qr-badge qr-badge-tikkie">Betalen via een Tikkie; voeg familienaam en adres toe via een bericht!</span>
         <a id="qr-tikkie-link" href="#" target="_blank" style="font-size:12px;color:#1a1a18;text-decoration:underline;text-align:center">Tikkie openen in browser</a>
+        <div style="font-size:12px;color:#555;text-align:center;margin-top:4px">Betalen via een Tikkie; voeg familienaam en adres toe via een bericht!</div>
       </div>
     </div>
-    <div style="font-size:13px;color:#888;text-align:center;line-height:1.8">
+    <div style="font-size:13px;color:#888;text-align:center;line-height:1.8;margin-top:.75rem">
       <strong style="color:#1a1a18">NL47 ASNB 8830 3748 49</strong><br>
       Bedrag: <strong style="color:#1a1a18" id="qr-amount"></strong>&nbsp;&nbsp;O.v.v.: <strong style="color:#1a1a18" id="qr-ref"></strong>
     </div>
   </div>
-
-  <button class="btn-submit" id="submit-btn" type="button">Aanmelden en bedrag bevestigen</button>
   <div class="msg msg-ok" id="msg-ok"></div>
   <div class="msg msg-err" id="msg-err"></div>
 </div>
@@ -376,7 +378,7 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
   }
 
   /* ---- QR ---- */
-  var TIKKIE_URL = 'https://tikkie.me/pay/o3frnin80ilbf9dtq29m';
+  var TIKKIE_URL = 'TIKKIE_PLACEHOLDER';
 
   function updateQR() {
     var card = document.getElementById('qr-card');
@@ -398,8 +400,12 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
     document.getElementById('qr-epc-link').href           = epcLarge;
     document.getElementById('qr-tikkie-img').src          = tikkieSrc;
     document.getElementById('qr-tikkie-link').href        = TIKKIE_URL;
+    // QR-kaart alleen tonen na submit, niet automatisch
+  }
 
-    card.style.display = 'block';
+  function showQR() {
+    var card = document.getElementById('qr-card');
+    if (currentTotal > 0) card.style.display = 'block';
   }
 
   /* ---- event listeners ---- */
@@ -547,13 +553,14 @@ h1{font-size:20px;font-weight:600;margin-bottom:.2rem}
       if (!orgDone || !deelDone || !binDone) return;
       if (orgErr && deelErr && binErr) {
         btn.disabled    = false;
-        btn.textContent = 'Aanmelden en bedrag bevestigen';
+        btn.textContent = 'Aanmelden';
         var el = document.getElementById('msg-err');
         el.innerHTML     = 'Verzenden mislukt. Controleer je internetverbinding en probeer opnieuw.';
         el.style.display = 'block';
         el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       } else {
         btn.textContent  = 'Verstuurd!';
+        showQR();
         var ok = document.getElementById('msg-ok');
         ok.innerHTML =
           '<strong>Bedankt, familie ' + naam + '!</strong><br><br>'
